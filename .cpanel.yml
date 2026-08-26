@@ -1,0 +1,49 @@
+---
+# cPanel Git Version Control deployment configuration
+#
+# NOTE: Update these two values before deploying:
+#   1. DEPLOYPATH  - the absolute path to your document root on the server.
+#                    Example: /home/username/public_html/raya-tender
+#   2. .env        - copy/keep your production .env file on the server.
+#                    This file is excluded from deployment on purpose so your
+#                    production secrets are never overwritten by the repo.
+
+deployment:
+  tasks:
+    # Absolute path to the application's document root on the server.
+    - export DEPLOYPATH=/home/username/public_html/raya-tender
+
+    # Required runtime directories that may not exist on a fresh deployment.
+    - mkdir -p $DEPLOYPATH/storage/framework/cache/data
+    - mkdir -p $DEPLOYPATH/storage/framework/sessions
+    - mkdir -p $DEPLOYPATH/storage/framework/views
+    - mkdir -p $DEPLOYPATH/storage/logs
+
+    # Copy all project files except things that should not be overwritten.
+    #   --delete       removes files in DEPLOYPATH that no longer exist in the repo
+    #   --exclude .git           the repository itself
+    #   --exclude .env           keep the server's production environment config
+    #   --exclude node_modules   installed on the server, never part of the repo
+    #   --exclude storage/app    user-uploaded data is preserved
+    #   --exclude storage/logs   server logs are preserved
+    - /bin/rsync -az --delete ./ $DEPLOYPATH/ \
+        --exclude='.git' \
+        --exclude='.env' \
+        --exclude='node_modules' \
+        --exclude='storage/app' \
+        --exclude='storage/logs'
+
+    # Install/update PHP dependencies for production.
+    - cd $DEPLOYPATH && /usr/local/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader
+
+    # Regenerate the application's cached configuration, routes, and views.
+    - cd $DEPLOYPATH && /usr/local/bin/php artisan config:cache
+    - cd $DEPLOYPATH && /usr/local/bin/php artisan route:cache
+    - cd $DEPLOYPATH && /usr/local/bin/php artisan view:cache
+
+    # Apply any new database migrations.
+    - cd $DEPLOYPATH && /usr/local/bin/php artisan migrate --force
+
+    # Set correct permissions for storage and bootstrap cache directories.
+    - chmod -R 775 $DEPLOYPATH/storage
+    - chmod -R 775 $DEPLOYPATH/bootstrap/cache
