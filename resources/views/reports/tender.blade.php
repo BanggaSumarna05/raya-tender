@@ -83,61 +83,57 @@
     @endforeach
   </div>
 
-  {{-- Export toolbar (no financial totals) --}}
+  {{-- Export toolbar --}}
   @can('export_reports')
-  <div class="flex justify-end items-center gap-2" x-data="{ openExcel: false, openPdf: false }">
+  @php
+    $availableCols  = \App\Http\Controllers\ReportController::availableTenderColumns();
+    $defaultCols    = \App\Http\Controllers\ReportController::defaultTenderColumns();
+    $canFinancial   = auth()->user()->can('view_financial_data');
+    $activeFilters  = array_filter($filters ?? []);
+  @endphp
+  <div class="flex justify-end items-center gap-2">
 
-    {{-- Excel dropdown --}}
-    <div class="relative">
-      <button @click="openExcel = !openExcel; openPdf = false"
+    {{-- Excel: Ringkasan — buka modal kolom --}}
+    <x-tender-export-modal
+      export-type="excel"
+      modal-id="excelModal"
+      :filters="$activeFilters"
+      :columns="$availableCols"
+      :defaults="$defaultCols"
+      :can-financial="$canFinancial"
+    >
+      <button type="button"
         class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
         <svg class="fill-success-600" width="16" height="16" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2.25C10.4142 2.25 10.75 2.58579 10.75 3V11.1893L12.9697 8.96967C13.2626 8.67678 13.7374 8.67678 14.0303 8.96967C14.3232 9.26256 14.3232 9.73744 14.0303 10.0303L10.5303 13.5303C10.2374 13.8232 9.76256 13.8232 9.46967 13.5303L5.96967 10.0303C5.67678 9.73744 5.67678 9.26256 5.96967 8.96967C6.26256 8.67678 6.73744 8.67678 7.03033 8.96967L9.25 11.1893V3C9.25 2.58579 9.58579 2.25 10 2.25ZM3.25 15C3.25 14.5858 3.58579 14.25 4 14.25H16C16.4142 14.25 16.75 14.5858 16.75 15C16.75 15.4142 16.4142 15.75 16 15.75H4C3.58579 15.75 3.25 15.4142 3.25 15Z" fill=""/></svg>
         Excel
-        <svg class="fill-gray-400 transition-transform" :class="openExcel ? 'rotate-180' : ''" width="12" height="12" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.22 6.97a.75.75 0 0 1 1.06 0L10 11.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0L4.22 8.03a.75.75 0 0 1 0-1.06Z" fill=""/></svg>
+        <svg class="fill-gray-400" width="12" height="12" viewBox="0 0 20 20"><path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
       </button>
-      <div x-show="openExcel" @click.outside="openExcel = false" x-transition
-        class="absolute right-0 z-20 mt-1 w-52 rounded-xl border border-gray-100 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-        <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wide">Pilih Tipe</div>
-        <a href="{{ route('reports.export.tender-excel', request()->all()) }}"
-          class="flex items-start gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700">
-          <svg class="mt-0.5 shrink-0 fill-success-500" width="15" height="15" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm2 2v8h10V6H5Z" fill=""/></svg>
-          <div>
-            <div class="text-sm font-medium text-gray-700 dark:text-gray-200">Laporan Ringkasan</div>
-            <div class="text-xs text-gray-400">Format profesional + statistik</div>
-          </div>
-        </a>
-        <a href="{{ route('reports.export.tender-raw', request()->all()) }}"
-          class="flex items-start gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700">
-          <svg class="mt-0.5 shrink-0 fill-gray-400" width="15" height="15" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm2 2v8h10V6H5Z" fill=""/></svg>
-          <div>
-            <div class="text-sm font-medium text-gray-700 dark:text-gray-200">Data Mentah (Raw)</div>
-            <div class="text-xs text-gray-400">Semua kolom, siap pivot/analisis</div>
-          </div>
-        </a>
-      </div>
-    </div>
+    </x-tender-export-modal>
 
-    {{-- PDF dropdown --}}
-    <div class="relative">
-      <button @click="openPdf = !openPdf; openExcel = false"
+    {{-- Excel: Raw — tetap langsung download (tidak perlu column selector) --}}
+    <a href="{{ route('reports.export.tender-raw', request()->all()) }}"
+      class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+      title="Download data mentah (semua kolom)">
+      <svg class="fill-gray-400" width="16" height="16" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm2 2v8h10V6H5Z" fill=""/></svg>
+      Raw
+    </a>
+
+    {{-- PDF — buka modal kolom --}}
+    <x-tender-export-modal
+      export-type="pdf"
+      modal-id="pdfModal"
+      :filters="$activeFilters"
+      :columns="$availableCols"
+      :defaults="$defaultCols"
+      :can-financial="$canFinancial"
+    >
+      <button type="button"
         class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
         <svg class="fill-error-500" width="16" height="16" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.414A2 2 0 0 0 17.414 6L14 2.586A2 2 0 0 0 12.586 2H4Zm7 1.5V7h3.5L11 3.5ZM5 9.75A.75.75 0 0 1 5.75 9h8.5a.75.75 0 0 1 0 1.5h-8.5A.75.75 0 0 1 5 9.75Zm.75 2.25a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5Z" fill=""/></svg>
         PDF
-        <svg class="fill-gray-400 transition-transform" :class="openPdf ? 'rotate-180' : ''" width="12" height="12" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.22 6.97a.75.75 0 0 1 1.06 0L10 11.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0L4.22 8.03a.75.75 0 0 1 0-1.06Z" fill=""/></svg>
+        <svg class="fill-gray-400" width="12" height="12" viewBox="0 0 20 20"><path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
       </button>
-      <div x-show="openPdf" @click.outside="openPdf = false" x-transition
-        class="absolute right-0 z-20 mt-1 w-52 rounded-xl border border-gray-100 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-        <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wide">Pilih Tipe</div>
-        <a href="{{ route('reports.export.tender-pdf', request()->all()) }}"
-          class="flex items-start gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700">
-          <svg class="mt-0.5 shrink-0 fill-error-500" width="15" height="15" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm2 2v8h10V6H5Z" fill=""/></svg>
-          <div>
-            <div class="text-sm font-medium text-gray-700 dark:text-gray-200">Laporan Tender</div>
-            <div class="text-xs text-gray-400">Format profesional dengan chart</div>
-          </div>
-        </a>
-      </div>
-    </div>
+    </x-tender-export-modal>
 
   </div>
   @endcan

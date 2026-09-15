@@ -6,8 +6,39 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Regular.otf'))) }}') format('opentype');
+    font-weight: 400; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Regular-Italic.otf'))) }}') format('opentype');
+    font-weight: 400; font-style: italic;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Semi-Bold.otf'))) }}') format('opentype');
+    font-weight: 600; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Semibold-Italic.otf'))) }}') format('opentype');
+    font-weight: 600; font-style: italic;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Bold.otf'))) }}') format('opentype');
+    font-weight: 700; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Bold-Italic.otf'))) }}') format('opentype');
+    font-weight: 700; font-style: italic;
+  }
+
   body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Eina01', sans-serif;
     font-size: 10px;
     color: #1d2939;
     background: #ffffff;
@@ -91,28 +122,32 @@
     vertical-align: top; font-size: 9px; color: #344054;
   }
   table.data tbody tr:nth-child(even) td { background: #f9fafb; }
-  .td-code  { font-family: 'Courier New', monospace; font-size: 8px; color: #667085; }
+  .td-no    { text-align: center; color: #98a2b3; font-size: 8px; width: 28px; }
+  .td-code  { font-family: 'Courier New', monospace; font-size: 8px; color: #667085; white-space: nowrap; }
   .td-title { font-weight: 600; color: #101828; }
   .td-muted { color: #98a2b3; font-size: 8.5px; }
+  .td-date  { text-align: center; white-space: nowrap; color: #667085; }
+  .td-num   { text-align: right; font-variant-numeric: tabular-nums; }
+  .td-desc  { max-width: 180px; overflow: hidden; }
 
   /* ── BADGES ── */
   .badge {
     display: inline-block; padding: 2px 7px; border-radius: 20px;
     font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap;
   }
-  .s-draft       { background:#f2f4f7; color:#667085; }
-  .s-identified  { background:#eff8ff; color:#1570ef; }
+  .s-draft        { background:#f2f4f7; color:#667085; }
+  .s-identified   { background:#eff8ff; color:#1570ef; }
   .s-qualification{ background:#f0f9ff; color:#026aa2; }
-  .s-preparation { background:#fff4ed; color:#c4320a; }
-  .s-submitted   { background:#ecfdf3; color:#027a48; }
-  .s-evaluation  { background:#fdf4ff; color:#6941c6; }
+  .s-preparation  { background:#fff4ed; color:#c4320a; }
+  .s-submitted    { background:#ecfdf3; color:#027a48; }
+  .s-evaluation   { background:#fdf4ff; color:#6941c6; }
   .s-clarification{ background:#fffaeb; color:#b54708; }
-  .s-negotiation { background:#f0fdf4; color:#166534; }
-  .s-won         { background:#d1fadf; color:#05603a; }
-  .s-lost        { background:#fef3f2; color:#b42318; }
-  .s-cancelled   { background:#f9f5ff; color:#6941c6; }
-  .s-completed   { background:#f0fdf4; color:#166534; }
-  .s-default     { background:#f2f4f7; color:#667085; }
+  .s-negotiation  { background:#f0fdf4; color:#166534; }
+  .s-won          { background:#d1fadf; color:#05603a; }
+  .s-lost         { background:#fef3f2; color:#b42318; }
+  .s-cancelled    { background:#f9f5ff; color:#6941c6; }
+  .s-completed    { background:#f0fdf4; color:#166534; }
+  .s-default      { background:#f2f4f7; color:#667085; }
 
   .p-low    { background:#f9fafb; color:#667085; }
   .p-medium { background:#fffaeb; color:#b54708; }
@@ -130,10 +165,40 @@
 <body>
 
 @php
-  /* ── Precompute chart data ── */
+  /* ── Kolom yang dipilih ── */
+  // $columns  = array of column keys, e.g. ['code','title','client',...]
+  // $columnLabels = array of key => label
+  // $exportStatuses = array of status values yang dipilih ([] = semua)
+
   $tenders = $data['tenders'];
 
-  /* Status distribution */
+  /* ── Label mapping ── */
+  $defaultLabels = [
+    'code'                => 'Kode',
+    'title'               => 'Nama Tender',
+    'client'              => 'Klien',
+    'category'            => 'Kategori',
+    'status'              => 'Status',
+    'priority'            => 'Prioritas',
+    'pic'                 => 'PIC',
+    'backup_pic'          => 'Backup PIC',
+    'location'            => 'Lokasi',
+    'source'              => 'Sumber',
+    'received_date'       => 'Tgl. Diterima',
+    'submission_deadline' => 'Deadline',
+    'project_start_date'  => 'Tgl. Mulai',
+    'project_end_date'    => 'Tgl. Selesai',
+    'estimated_value'     => 'Nilai Estimasi',
+    'description'         => 'Deskripsi',
+    'notes'               => 'Catatan',
+    'created_at'          => 'Tgl. Dibuat',
+  ];
+  $labels = array_merge($defaultLabels, $columnLabels ?? []);
+
+  /* ── Kolom yang aktif ── */
+  $activeColumns = $columns ?? ['code','title','client','category','pic','status','priority','submission_deadline','location','created_at'];
+
+  /* ── Status distribution ── */
   $statusColors = [
     'draft'          => '#94a3b8',
     'identified'     => '#60a5fa',
@@ -163,7 +228,7 @@
   arsort($statusDist);
   $totalForPct = array_sum($statusDist) ?: 1;
 
-  /* Priority distribution */
+  /* ── Priority distribution ── */
   $priorityColors = ['low'=>'#94a3b8','medium'=>'#fbbf24','high'=>'#fb923c','urgent'=>'#ef4444'];
   $priorityDist = [];
   foreach ($tenders as $t) {
@@ -173,10 +238,9 @@
   arsort($priorityDist);
   $totalPri = array_sum($priorityDist) ?: 1;
 
-  /* Bar chart max */
   $barMax = max(array_values($statusDist) ?: [1]);
 
-  /* SVG donut helper */
+  /* ── SVG donut helper ── */
   function donutSlices(array $dist, array $colors, int $cx, int $cy, int $r, int $innerR): string {
     $total = array_sum($dist) ?: 1;
     $angle = -90; $svg = '';
@@ -197,6 +261,44 @@
     }
     return $svg;
   }
+
+  /* ── Helper: nilai sel per kolom ── */
+  function tenderCellValue($t, string $col): string {
+    return match ($col) {
+      'code'                => $t->code ?? '—',
+      'title'               => $t->title ?? '—',
+      'client'              => $t->client?->name ?? '—',
+      'category'            => $t->category?->name ?? '—',
+      'pic'                 => $t->pic?->name ?? '—',
+      'backup_pic'          => $t->backupPic?->name ?? '—',
+      'location'            => $t->location ?? '—',
+      'source'              => $t->source ?? '—',
+      'received_date'       => $t->received_date?->format('d/m/Y') ?? '—',
+      'submission_deadline' => $t->submission_deadline?->format('d/m/Y') ?? '—',
+      'project_start_date'  => $t->project_start_date?->format('d/m/Y') ?? '—',
+      'project_end_date'    => $t->project_end_date?->format('d/m/Y') ?? '—',
+      'estimated_value'     => $t->estimated_value ? number_format($t->estimated_value, 0, ',', '.') : '—',
+      'description'         => $t->description ?? '—',
+      'notes'               => $t->notes ?? '—',
+      'created_at'          => $t->created_at?->format('d/m/Y') ?? '—',
+      default               => '—',
+    };
+  }
+
+  /* ── Helper: CSS class per kolom ── */
+  function tenderCellClass(string $col): string {
+    return match ($col) {
+      'code'                              => 'td-code',
+      'title'                             => 'td-title',
+      'category','backup_pic','source'    => 'td-muted',
+      'received_date','submission_deadline',
+      'project_start_date','project_end_date',
+      'created_at'                        => 'td-date',
+      'estimated_value'                   => 'td-num',
+      'description','notes'              => 'td-desc td-muted',
+      default                             => '',
+    };
+  }
 @endphp
 
 {{-- ── HEADER ── --}}
@@ -215,6 +317,12 @@
       @endif
       @if(!empty($filters['status']))
         <span>·</span> Status: {{ strtoupper($filters['status']) }}
+      @elseif(!empty($exportStatuses))
+        @php
+          $statusLabelsMap = collect(\App\Enums\TenderStatus::cases())->mapWithKeys(fn($s) => [$s->value => $s->label()])->all();
+          $pickedLabels = array_map(fn($s) => $statusLabelsMap[$s] ?? $s, $exportStatuses);
+        @endphp
+        <span>·</span> Status: {{ implode(', ', $pickedLabels) }}
       @endif
     </div>
   </div>
@@ -225,34 +333,45 @@
 <table class="data">
   <thead>
     <tr>
-      <th style="width:82px">Kode</th>
-      <th>Nama Tender</th>
-      <th>Klien</th>
-      <th>Kategori</th>
-      <th>PIC</th>
-      <th>Status</th>
-      <th>Prioritas</th>
-      <th style="width:62px">Deadline</th>
+      <th style="width:28px">#</th>
+      @foreach($activeColumns as $col)
+        @php
+          $w = match($col) {
+            'code'                => 'width:82px',
+            'submission_deadline',
+            'received_date',
+            'project_start_date',
+            'project_end_date',
+            'created_at'          => 'width:62px',
+            'status','priority'   => 'width:72px',
+            'estimated_value'     => 'width:80px',
+            default               => '',
+          };
+        @endphp
+        <th @if($w) style="{{ $w }}" @endif>{{ $labels[$col] ?? $col }}</th>
+      @endforeach
     </tr>
   </thead>
   <tbody>
-    @forelse($data['tenders'] as $t)
+    @forelse($data['tenders'] as $i => $t)
     @php
       $sk = 's-' . ($t->status?->value ?? 'default');
       $pk = 'p-' . ($t->priority?->value ?? 'low');
     @endphp
     <tr>
-      <td class="td-code">{{ $t->code }}</td>
-      <td class="td-title">{{ $t->title }}</td>
-      <td>{{ $t->client?->name ?? '—' }}</td>
-      <td class="td-muted">{{ $t->category?->name ?? '—' }}</td>
-      <td>{{ $t->pic?->name ?? '—' }}</td>
-      <td><span class="badge {{ $sk }}">{{ $t->status?->label() }}</span></td>
-      <td><span class="badge {{ $pk }}">{{ $t->priority?->label() }}</span></td>
-      <td class="td-muted">{{ $t->submission_deadline?->format('d/m/Y') ?? '—' }}</td>
+      <td class="td-no">{{ $i + 1 }}</td>
+      @foreach($activeColumns as $col)
+        @if($col === 'status')
+          <td><span class="badge {{ $sk }}">{{ $t->status?->label() }}</span></td>
+        @elseif($col === 'priority')
+          <td><span class="badge {{ $pk }}">{{ $t->priority?->label() }}</span></td>
+        @else
+          <td class="{{ tenderCellClass($col) }}">{{ tenderCellValue($t, $col) }}</td>
+        @endif
+      @endforeach
     </tr>
     @empty
-    <tr class="empty-row"><td colspan="8">Tidak ada data tender</td></tr>
+    <tr class="empty-row"><td colspan="{{ count($activeColumns) + 1 }}">Tidak ada data tender</td></tr>
     @endforelse
   </tbody>
 </table>
@@ -334,7 +453,13 @@
 {{-- ── FOOTER ── --}}
 <div class="footer">
   <div class="footer-left">Sumber data: Raya Tender Management System</div>
-  <div class="footer-right">Dokumen internal — data finansial tidak ditampilkan</div>
+  <div class="footer-right">
+    @if(in_array('estimated_value', $activeColumns))
+      Dokumen internal — data finansial ditampilkan sesuai akses
+    @else
+      Dokumen internal — data finansial tidak ditampilkan
+    @endif
+  </div>
 </div>
 
 </body>

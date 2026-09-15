@@ -6,8 +6,39 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Regular.otf'))) }}') format('opentype');
+    font-weight: 400; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Regular-Italic.otf'))) }}') format('opentype');
+    font-weight: 400; font-style: italic;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Semi-Bold.otf'))) }}') format('opentype');
+    font-weight: 600; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Semibold-Italic.otf'))) }}') format('opentype');
+    font-weight: 600; font-style: italic;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Bold.otf'))) }}') format('opentype');
+    font-weight: 700; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Eina01';
+    src: url('data:font/opentype;base64,{{ base64_encode(file_get_contents(public_path('Eina-Font/Eina-Font/OTF/Eina-01-Bold-Italic.otf'))) }}') format('opentype');
+    font-weight: 700; font-style: italic;
+  }
+
   body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Eina01', sans-serif;
     font-size: 10px;
     color: #1d2939;
     background: #ffffff;

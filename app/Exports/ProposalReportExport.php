@@ -94,14 +94,14 @@ class ProposalReportExport implements
                 $ws->mergeCells("C1:{$lc}2");
                 $ws->setCellValue('C1', 'LAPORAN PROPOSAL');
                 $ws->getStyle('C1')->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 18, 'color' => ['rgb' => '101828']],
+                    'font'      => ['name' => 'Eina01', 'bold' => true, 'size' => 18, 'color' => ['rgb' => '101828']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
                 ]);
 
                 $ws->mergeCells("C3:{$lc}3");
                 $ws->setCellValue('C3', 'PT. RAYA KONSTRUKSI INTERNASIONAL');
                 $ws->getStyle('C3')->applyFromArray([
-                    'font'      => ['size' => 9, 'color' => ['rgb' => '667085']],
+                    'font'      => ['name' => 'Eina01', 'size' => 9, 'color' => ['rgb' => '667085']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
                 ]);
 
@@ -132,10 +132,10 @@ class ProposalReportExport implements
                 foreach ([5 => ['Periode', $period], 6 => ['Tanggal Export', now()->format('d F Y, H:i')]] as $r => [$lbl, $val]) {
                     $ws->mergeCells("A{$r}:B{$r}");
                     $ws->setCellValue("A{$r}", $lbl);
-                    $ws->getStyle("A{$r}")->applyFromArray(['font' => ['bold' => true, 'size' => 9, 'color' => ['rgb' => '344054']], 'alignment' => ['vertical' => Alignment::VERTICAL_CENTER]]);
+                    $ws->getStyle("A{$r}")->applyFromArray(['font' => ['name' => 'Eina01', 'bold' => true, 'size' => 9, 'color' => ['rgb' => '344054']], 'alignment' => ['vertical' => Alignment::VERTICAL_CENTER]]);
                     $ws->mergeCells("C{$r}:{$lc}{$r}");
                     $ws->setCellValue("C{$r}", $val);
-                    $ws->getStyle("C{$r}")->applyFromArray(['font' => ['size' => 9, 'color' => ['rgb' => '344054']], 'alignment' => ['vertical' => Alignment::VERTICAL_CENTER]]);
+                    $ws->getStyle("C{$r}")->applyFromArray(['font' => ['name' => 'Eina01', 'size' => 9, 'color' => ['rgb' => '344054']], 'alignment' => ['vertical' => Alignment::VERTICAL_CENTER]]);
                     $ws->getRowDimension($r)->setRowHeight(15);
                 }
 
@@ -167,7 +167,7 @@ class ProposalReportExport implements
                     $ws->mergeCells($lr);
                     $ws->setCellValue($lc2, $label);
                     $ws->getStyle($lr)->applyFromArray([
-                        'font'      => ['bold' => true, 'size' => 8, 'color' => ['rgb' => $fg]],
+                        'font'      => ['name' => 'Eina01', 'bold' => true, 'size' => 8, 'color' => ['rgb' => $fg]],
                         'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $bg]],
                         'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
                         'borders'   => ['top' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'E4E7EC']], 'left' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'E4E7EC']], 'right' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'E4E7EC']]],
@@ -175,7 +175,7 @@ class ProposalReportExport implements
                     $ws->mergeCells($vr);
                     $ws->setCellValue($vc, $value);
                     $ws->getStyle($vr)->applyFromArray([
-                        'font'      => ['bold' => true, 'size' => 20, 'color' => ['rgb' => $fg]],
+                        'font'      => ['name' => 'Eina01', 'bold' => true, 'size' => 20, 'color' => ['rgb' => $fg]],
                         'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $bg]],
                         'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
                         'borders'   => ['bottom' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'E4E7EC']], 'left' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'E4E7EC']], 'right' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'E4E7EC']]],
@@ -192,7 +192,7 @@ class ProposalReportExport implements
                 $ws->mergeCells("A11:{$lc}11");
                 $ws->setCellValue('A11', 'DAFTAR PROPOSAL');
                 $ws->getStyle('A11')->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 8, 'color' => ['rgb' => '98A2B3']],
+                    'font'      => ['name' => 'Eina01', 'bold' => true, 'size' => 8, 'color' => ['rgb' => '98A2B3']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
                 ]);
                 $ws->getRowDimension(11)->setRowHeight(12);
@@ -200,7 +200,7 @@ class ProposalReportExport implements
                 // ── Row 12: Table header ──
                 $lc = self::LAST_COL;
                 $ws->getStyle("A{$hRow}:{$lc}{$hRow}")->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 9, 'color' => ['rgb' => 'FFFFFF']],
+                    'font'      => ['name' => 'Eina01', 'bold' => true, 'size' => 9, 'color' => ['rgb' => 'FFFFFF']],
                     'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '1D2939']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
                     'borders'   => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '344054']]],
@@ -213,16 +213,16 @@ class ProposalReportExport implements
                         $bg = ($row - $dStart) % 2 === 0 ? 'FFFFFF' : 'F9FAFB';
                         $ws->getStyle("A{$row}:{$lc}{$row}")->applyFromArray([
                             'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $bg]],
-                            'font'      => ['size' => 9],
+                            'font'      => ['name' => 'Eina01', 'size' => 9],
                             'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
                             'borders'   => ['bottom' => ['borderStyle' => Border::BORDER_HAIR, 'color' => ['rgb' => 'E4E7EC']]],
                         ]);
                         $ws->getRowDimension($row)->setRowHeight(16);
                     }
                     $ws->getStyle("A{$dStart}:A{$dEnd}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                    $ws->getStyle("B{$dStart}:B{$dEnd}")->applyFromArray(['font' => ['size' => 8, 'color' => ['rgb' => '667085']]]);
-                    $ws->getStyle("C{$dStart}:C{$dEnd}")->getFont()->setBold(true);
-                    $ws->getStyle("D{$dStart}:D{$dEnd}")->applyFromArray(['font' => ['size' => 8, 'color' => ['rgb' => '667085']]]);
+                    $ws->getStyle("B{$dStart}:B{$dEnd}")->applyFromArray(['font' => ['name' => 'Eina01', 'size' => 8, 'color' => ['rgb' => '667085']]]);
+                    $ws->getStyle("C{$dStart}:C{$dEnd}")->getFont()->setName('Eina01')->setBold(true);
+                    $ws->getStyle("D{$dStart}:D{$dEnd}")->applyFromArray(['font' => ['name' => 'Eina01', 'size' => 8, 'color' => ['rgb' => '667085']]]);
                     foreach (['H', 'I', 'J'] as $c) {
                         $ws->getStyle("{$c}{$dStart}:{$c}{$dEnd}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     }
@@ -236,7 +236,7 @@ class ProposalReportExport implements
                 $ws->mergeCells("A{$footerRow}:{$lc}{$footerRow}");
                 $ws->setCellValue("A{$footerRow}", 'Sumber data: Raya Tender Management System');
                 $ws->getStyle("A{$footerRow}")->applyFromArray([
-                    'font'      => ['size' => 8, 'italic' => true, 'color' => ['rgb' => 'B0B7C3']],
+                    'font'      => ['name' => 'Eina01', 'size' => 8, 'italic' => true, 'color' => ['rgb' => 'B0B7C3']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
                 ]);
                 $ws->getRowDimension($footerRow)->setRowHeight(14);

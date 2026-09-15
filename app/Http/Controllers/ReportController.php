@@ -64,14 +64,109 @@ class ReportController extends Controller
 
     // ── Tender Exports ────────────────────────────────────────────────────────
 
+    /**
+     * Daftar semua kolom yang tersedia untuk export tender.
+     * Key = nama kolom internal, value = label tampilan.
+     */
+    public static function availableTenderColumns(): array
+    {
+        return [
+            'code'                 => 'Kode Tender',
+            'title'                => 'Nama Tender',
+            'client'               => 'Klien',
+            'category'             => 'Kategori',
+            'status'               => 'Status',
+            'priority'             => 'Prioritas',
+            'pic'                  => 'PIC',
+            'backup_pic'           => 'Backup PIC',
+            'location'             => 'Lokasi',
+            'source'               => 'Sumber',
+            'received_date'        => 'Tgl. Diterima',
+            'submission_deadline'  => 'Deadline Submission',
+            'project_start_date'   => 'Tgl. Mulai Proyek',
+            'project_end_date'     => 'Tgl. Selesai Proyek',
+            'estimated_value'      => 'Nilai Estimasi',   // finansial — dibatasi permission
+            'description'          => 'Deskripsi',
+            'notes'                => 'Catatan',
+            'created_at'           => 'Tgl. Dibuat',
+        ];
+    }
+
+    /**
+     * Kolom default jika user belum memilih.
+     */
+    public static function defaultTenderColumns(): array
+    {
+        return ['code', 'title', 'client', 'category', 'pic', 'status', 'priority', 'submission_deadline', 'location', 'created_at'];
+    }
+
+    /**
+     * Daftar nilai status tender yang valid untuk filter export.
+     */
+    public static function validTenderStatuses(): array
+    {
+        return array_map(fn($s) => $s->value, \App\Enums\TenderStatus::cases());
+    }
+
+    /**
+     * Simpan pilihan kolom & status ke session, lalu redirect ke endpoint export yang dipilih.
+     */
+    public function saveTenderExportColumns(Request $request)
+    {
+        abort_unless(auth()->user()->can('export_reports'), 403);
+
+        $allowed      = array_keys(self::availableTenderColumns());
+        $canFinancial = auth()->user()->can('view_financial_data');
+
+        // Validasi kolom
+        $selected = collect($request->input('columns', []))
+            ->filter(fn($col) => in_array($col, $allowed, true))
+            ->filter(fn($col) => $col !== 'estimated_value' || $canFinancial)
+            ->values()
+            ->all();
+
+        if (empty($selected)) {
+            $selected = self::defaultTenderColumns();
+        }
+
+        session(['tender_export_columns' => $selected]);
+
+        // Validasi & simpan export_statuses (hanya jika kolom status diceklis)
+        if (in_array('status', $selected, true)) {
+            $validStatuses    = self::validTenderStatuses();
+            $exportStatuses   = collect($request->input('export_statuses', []))
+                ->filter(fn($s) => in_array($s, $validStatuses, true))
+                ->values()
+                ->all();
+
+            // [] = semua status (All), array berisi = filter spesifik
+            session(['tender_export_statuses' => $exportStatuses]);
+        } else {
+            session()->forget('tender_export_statuses');
+        }
+
+        $exportType = $request->input('export_type', 'excel');
+        $filters    = $request->only(['start_date', 'end_date', 'status', 'client_id', 'category_id', 'pic_id']);
+
+        if ($exportType === 'pdf') {
+            return redirect()->route('reports.export.tender-pdf', $filters);
+        }
+
+        return redirect()->route('reports.export.tender-excel', $filters);
+    }
+
     public function exportTenderExcel(Request $request)
     {
         abort_unless(auth()->user()->can('export_reports'), 403);
 
         $filters = $request->only(['start_date', 'end_date', 'status', 'client_id', 'category_id', 'pic_id']);
 
+        $columns        = session('tender_export_columns', self::defaultTenderColumns());
+        $exportStatuses = session('tender_export_statuses', []);   // [] = semua status
+        session()->forget(['tender_export_columns', 'tender_export_statuses']);
+
         return Excel::download(
-            new TenderReportExport($filters),
+            new TenderReportExport($filters, $columns, $exportStatuses),
             'laporan-tender-' . now()->format('Y-m-d') . '.xlsx'
         );
     }
@@ -93,9 +188,20 @@ class ReportController extends Controller
         abort_unless(auth()->user()->can('export_reports'), 403);
 
         $filters = $request->only(['start_date', 'end_date', 'status', 'client_id', 'category_id', 'pic_id']);
-        $data    = $this->reportService->getTenderReport($filters);
 
-        return Pdf::loadView('reports.exports.tender-pdf', compact('data', 'filters'))
+        $columns        = session('tender_export_columns', self::defaultTenderColumns());
+        $exportStatuses = session('tender_export_statuses', []);   // [] = semua status
+        $columnLabels   = self::availableTenderColumns();
+        session()->forget(['tender_export_columns', 'tender_export_statuses']);
+
+        // Terapkan filter status dari modal jika ada
+        if (!empty($exportStatuses)) {
+            $filters['statuses'] = $exportStatuses;
+        }
+
+        $data = $this->reportService->getTenderReport($filters);
+
+        return Pdf::loadView('reports.exports.tender-pdf', compact('data', 'filters', 'columns', 'columnLabels', 'exportStatuses'))
             ->setPaper('a4', 'landscape')
             ->download('laporan-tender-' . now()->format('Y-m-d') . '.pdf');
     }

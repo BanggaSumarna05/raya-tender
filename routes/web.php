@@ -125,6 +125,11 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::middleware(['permission:export_reports', 'throttle:10,1'])->group(function () {
+            // Column selector — simpan pilihan kolom ke session sebelum export
+            Route::post('/export/tender-columns', [ReportController::class, 'saveTenderExportColumns'])
+                ->name('export.tender-columns')
+                ->withoutMiddleware('throttle:10,1');
+
             Route::get('/export/tender-excel', [ReportController::class, 'exportTenderExcel'])
                 ->name('export.tender-excel');
             Route::get('/export/tender-pdf', [ReportController::class, 'exportTenderPdf'])

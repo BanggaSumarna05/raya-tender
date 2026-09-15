@@ -1,4 +1,172 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap") layer(base);
+/* ===== EINA FONT FACE DEFINITIONS ===== */
+
+/* ── Eina 01 ── */
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Light.woff2') format('woff2');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Light-Italic.woff2') format('woff2');
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Regular-Italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Semi-Bold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Semibold-Italic.woff2') format('woff2');
+  font-weight: 600; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-01-Bold-Italic.woff2') format('woff2');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+
+/* ── Eina 02 ── */
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Light.woff2') format('woff2');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Light-Italic.woff2') format('woff2');
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Regular-Italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Semibold-Italic.woff2') format('woff2');
+  font-weight: 600; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina02';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-02-Bold-Italic.woff2') format('woff2');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+
+/* ── Eina 03 ── */
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Light.woff2') format('woff2');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Light-Italic.woff2') format('woff2');
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Regular-Italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Semibold-Italic.woff2') format('woff2');
+  font-weight: 600; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina03';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-03-Bold-Italic.woff2') format('woff2');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+
+/* ── Eina 04 ── */
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Light.woff2') format('woff2');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Light-Italic.woff2') format('woff2');
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Regular-Italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Semibold-Italic.woff2') format('woff2');
+  font-weight: 600; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Eina04';
+  src: url('/Eina-Font/Eina-Font/WOFF2/Eina-04-Bold-Italic.woff2') format('woff2');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
 
 @import "tailwindcss";
 
@@ -11,7 +179,11 @@
 
 @theme {
   --font-*: initial;
-  --font-outfit: Outfit, sans-serif;
+  --font-outfit: 'Eina01', sans-serif;
+  --font-eina01: 'Eina01', sans-serif;
+  --font-eina02: 'Eina02', sans-serif;
+  --font-eina03: 'Eina03', sans-serif;
+  --font-eina04: 'Eina04', sans-serif;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;

@@ -23,6 +23,7 @@ class ReportService
             ->when(isset($filters['start_date']), fn($q) => $q->whereDate('created_at', '>=', $filters['start_date']))
             ->when(isset($filters['end_date']),   fn($q) => $q->whereDate('created_at', '<=', $filters['end_date']))
             ->when(isset($filters['status']),     fn($q) => $q->where('status', $filters['status']))
+            ->when(!empty($filters['statuses']),  fn($q) => $q->whereIn('status', $filters['statuses']))
             ->when(isset($filters['client_id']),  fn($q) => $q->where('client_id', $filters['client_id']))
             ->when(isset($filters['category_id']),fn($q) => $q->where('category_id', $filters['category_id']))
             ->when(isset($filters['pic_id']),      fn($q) => $q->where('pic_id', $filters['pic_id']));
